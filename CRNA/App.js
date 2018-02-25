@@ -1,7 +1,9 @@
 import React from 'react';
-import { StyleSheet, Text, View, ScrollView, Image, Button } from 'react-native';
+import { StyleSheet, Text, View, ScrollView, Image, Button, TextInput, Alert, Keyboard } from 'react-native';
 
-const BACKGROUND_COLORS = ["#6BE387", "#387142", "#032E52", "#549091", "#EDD298", "#D6293D", "#FF9751", "#5CD6E8", "#AFFF6B", "#E8638E", "#FFE765"];
+import DARK_KNIGHT_IMAGE from './assets/images/TheDarkKnightRises.png'
+import CHAOS_CLOWN_IMAGE from './assets/images/ChaosClown.jpg'
+import GOTHAMS_CHAMPION_IMAGE from './assets/images/GothamsChampion.jpg'
 
 
 export default class App extends React.Component {
@@ -10,47 +12,87 @@ export default class App extends React.Component {
     super(props)
 
     this.state = {
-      currentColor: 'FFFFF'
+      currentBackgroundColor: '#73CB49',
+      phrase: ''
     }
   }
 
-  changeBackgroundColor() {
-    var color = BACKGROUND_COLORS[Math.floor(Math.random() * BACKGROUND_COLORS.length)];
+  changeBackgroundColor = () => {
+    const color = '#' + Math.floor(Math.random() * 16777215).toString(16)
 
-    this.setState({ currentColor: color })
+    this.setState({
+      currentBackgroundColor: color
+    })
+  }
+
+  handleSubmit = () => {
+    if (this.state.phrase === 'awesome' || this.state.phrase === 'Awesome') {
+      Keyboard.dismiss
+      Alert.alert(
+        'Success',
+        'You are awesome!',
+        [
+          { text: 'OK', onPress: () => console.log('OK Pressed') },
+        ],
+        { cancelable: false })
+    } else {
+      Keyboard.dismiss
+      Alert.alert(
+        'Invalid',
+        'You entered the wrong phrase!',
+        [
+          { text: 'Try again', onPress: () => console.log('Try again pressed') }
+        ],
+        { cancelable: false }
+      )
+    }
   }
 
   render() {
-
-    const { currentColor } = this.state
 
     return (
       <ScrollView style={styles.scrollViewContainer}>
 
         <View style={styles.bigImageContainer}>
-         <Image
-          source={require('./TheDarkKnightRises.png')}
-          style={styles.bigImage}
-         />
+          <Image
+            source={DARK_KNIGHT_IMAGE}
+            style={styles.bigImage}
+          />
         </View>
 
         <View style={styles.smallImageContainer}>
-        <Image
-          source={require('./GothamsChampion.jpg')}
-          style={styles.smallImage}
-        />
-        <Image
-          source={require('./ChaosClown.jpg')}
-          style={styles.smallImage}
-        />
-        </View>
-          <Button 
-            title="Press me!"
-            onPress={() => this.state.changeBackgroundColor()}
+          <Image
+            source={GOTHAMS_CHAMPION_IMAGE}
+            style={styles.smallImage}
           />
-        <View>
+          <Image
+            source={CHAOS_CLOWN_IMAGE}
+            style={styles.smallImage}
+          />
         </View>
-        
+
+        <View
+          style={styles.changeColorContainer}
+          backgroundColor={this.state.currentBackgroundColor}
+        >
+          <Button
+            // style={styles.changeColorButton}
+            title="Press me to change color!"
+            onPress={this.changeBackgroundColor}
+          />
+        </View>
+
+        <View style={styles.textInputContainer}>
+          <TextInput
+            style={styles.phraseInput}
+            placeholder="Enter a secret phrase"
+            placeholderTextColor='#FFF'
+            value={this.state.phrase}
+            onChangeText={(text) => this.setState({ phrase })}
+            onSubmitEditing={this.handleSubmit}
+          />
+        </View>
+
       </ScrollView>
     );
   }
@@ -58,6 +100,7 @@ export default class App extends React.Component {
 
 const styles = StyleSheet.create({
   scrollViewContainer: {
+    backgroundColor: '#343535',
     flex: 1,
     flexDirection: 'column',
   },
@@ -68,9 +111,9 @@ const styles = StyleSheet.create({
   },
 
   bigImage: {
-   alignContent: 'center',
-   height: 300,
-   width: '100%',
+    alignContent: 'center',
+    height: 300,
+    width: '100%',
   },
 
   smallImageContainer: {
@@ -87,5 +130,34 @@ const styles = StyleSheet.create({
     width: 200,
     borderRadius: 100,
   },
-    
+
+  changeColorContainer: {
+    height: 200,
+    flex: 4,
+    alignContent: 'center',
+    justifyContent: 'center',
+  },
+
+  changeColorButton: {
+    borderRadius: 12,
+    backgroundColor: '#fff'
+  },
+
+  textInputContainer: {
+    flex: .1,
+    alignContent: 'center',
+    justifyContent: 'center',
+    padding: 15,
+    height: 150,
+  },
+
+  phraseInput: {
+    borderWidth: 1,
+    borderRadius: 10,
+    borderColor: '#FFF',
+    padding: 10,
+    height: 60,
+    color: 'white'
+  },
+
 });
